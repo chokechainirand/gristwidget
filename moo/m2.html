@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>onRecord</title>
+    <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+  </head>
+  <body>
+    <pre id="readout">Waiting for data...</pre>
+
+    <pre id="moo">testing222</pre>
+
+    <script>
+      grist.ready();
+      grist.onRecord(function (record) {
+        document.getElementById('readout').innerHTML = JSON.stringify(
+          record,
+          null,
+          2
+        );
+      
+      let rawdata = JSON.stringify(record,null,2);
+      
+
+			document.getElementById('moo').innerHTML = rawdata.url
+      //let url = 'https://www.sanook.com/';
+      function prepareFrame() {
+        var ifrm = document.createElement('iframe');
+        ifrm.setAttribute('src', url);
+        ifrm.style.width = '640px';
+        ifrm.style.height = '480px';
+        ifrm.style.border = '0';
+        document.body.appendChild(ifrm);
+      }
+      prepareFrame();
+
+    });
+    </script>
+
+    
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m26!1m12!1m3!1d7751.515996647061!2d100.46500903797603!3d13.733096168790752!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m11!3e0!4m3!3m2!1d13.7312374!2d100.46670619999999!4m5!1s0x30e2984e16d83fbd%3A0xe7a43d3bf6b99263!2s174-17%20Soi%20Khrittachak%2C%20Khwaeng%20Wat%20Tha%20Phra%2C%20Khet%20Bangkok%20Yai%2C%20Krung%20Thep%20Maha%20Nakhon%2010600!3m2!1d13.7302936!2d100.47249819999999!5e0!3m2!1sen!2sth!4v1683899658226!5m2!1sen!2sth"
+      width="400"
+      height="400"
+      style="border: 0"
+     
+    ></iframe>
+  </body>
+</html>
