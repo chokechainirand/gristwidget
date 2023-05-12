@@ -8,7 +8,7 @@
   <body>
     <pre id="readout">Waiting for data...</pre>
 
-    <pre id="moo">testing222</pre>
+    <pre id="moo">testing123</pre>
 
     <script>
       grist.ready();
@@ -22,11 +22,11 @@
       let rawdata = JSON.stringify(record,null,2);
       
 
-			document.getElementById('moo').innerHTML = rawdata.url
+		document.getElementById('moo').innerHTML = rawdata.url
       //let url = 'https://www.sanook.com/';
       function prepareFrame() {
         var ifrm = document.createElement('iframe');
-        ifrm.setAttribute('src', url);
+        ifrm.setAttribute('src', rawdata.url);
         ifrm.style.width = '640px';
         ifrm.style.height = '480px';
         ifrm.style.border = '0';
