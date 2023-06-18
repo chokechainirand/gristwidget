@@ -32,15 +32,15 @@
 <body>
   
   <div id="container"></div>
-
+ <pre id="readout">Waiting for data...</pre>
   <script>
 	var datamap = '' 
 	grist.ready();
       grist.onRecords(function(records) {
         datamap = JSON.stringify(records, null, 2);
       });
-
-
+	console.log(datamap)
+	document.getElementById('readout').innerHTML  = datamap
 	  
     anychart.onDocumentReady(function () {
       //anychart.theme('darkEarth');
