@@ -36,7 +36,6 @@
     grist.ready();
     grist.onRecords(function (records) {
       datamap = JSON.stringify(records, null, 2);
-      document.getElementById('readout').innerHTML = datamap;
 
 
 
@@ -45,6 +44,7 @@
 
     });
     //console.log(datamap)
+    document.getElementById('readout').innerHTML = datamap;
     
 
     anychart.onDocumentReady(function () {
