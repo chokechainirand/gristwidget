@@ -63,7 +63,7 @@
         var chart = anychart.stock();
         var title = chart.title();
         title.enabled(true);
-        title.text(datamap[0]['coin']);
+        //title.text(datamap[0]['coin']);
         chart.tooltip().fontColor("gold");
         chart.tooltip().format(
           "{%seriesName}: {%value}{thousandsSeparator:'',scale:(1000)(1000)(1000)|(k)(m)(b),numDecimals:4,trailingZeros:false}");
