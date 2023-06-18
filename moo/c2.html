@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>onRecord</title>
+    <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+  </head>
+  <body>
+    <pre id="readout">Waiting for data...</pre>
+    <script>
+      
+      var datamap ="";
+      grist.ready();
+      grist.onRecords(function(records) {
+        datamap = JSON.stringify(records, null, 2);
+          document.getElementById('readout').innerHTML = datamap
+      });
+
+      console.log(datamap)
+
+      
+    </script>
+
+   
+  
+  
+  </body>
+</html>
