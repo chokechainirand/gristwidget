@@ -1,5 +1,12 @@
-                     <html>
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
+<meta charset="utf-8">
+<title>onRecord</title>
+<script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+
+	
   <script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
   <script src="https://cdn.anychart.com/releases/v8/js/anychart-ui.min.js"></script>
   <script src="https://cdn.anychart.com/releases/v8/js/anychart-exports.min.js"></script>
@@ -25,84 +32,82 @@
 <body>
   
   <div id="container"></div>
-  
 
   <script>
-
-    anychart.onDocumentReady(function () {
-	// set chart theme
-anychart.theme('darkTurquoise');
-      // The data used in this sample can be obtained from the CDN
-      // https://cdn.anychart.com/csv-data/msft-daily-short-data(2011-2016).js
-
-      // create data table on loaded data
-      var dataTable = anychart.data.table();
-      dataTable.addData(get_msft_daily_short_data()); 
-
-      // map data for the ohlc series
-      var ohlcMapping = dataTable.mapAs({
-        open: 1,
-        high: 2,
-        low: 3,
-        close: 4
+	var aa = '' 
+	grist.ready();
+      grist.onRecords(function(records) {
+        aa = JSON.stringify(records, null, 2);
       });
 
-      // map data for scroller and volume series
-      var valueMapping = dataTable.mapAs({ value: 5 });
-      var volumeMapping = dataTable.mapAs({ volume: 5 });
 
+	  
+    anychart.onDocumentReady(function () {
+      //anychart.theme('darkEarth');
+      
+      var dataTable = anychart.data.table(); 
+      Object.keys(datamap).forEach(function(e) {
+      
+      aa.push(
+        [
+        datamap[e]['time'],
+        datamap[e]['c1_percent'],
+        datamap[e]['high24hr'],
+        datamap[e]['low24hr'],
+        datamap[e]['vd'],
+        datamap[e]['last'],
+        datamap[e]['quoteVolume'],
+        
+                ]);
+      });
+   
+      dataTable.addData(aa);
+      
       // create stock chart
       var chart = anychart.stock();
+      var title = chart.title();
+      title.enabled(true);
+      title.text(datamap[0]['coin'] );
+      chart.tooltip().fontColor("gold");
+      chart.tooltip().format(
+      "{%seriesName}: {%value}{thousandsSeparator:'',scale:(1000)(1000)(1000)|(k)(m)(b),numDecimals:4,trailingZeros:false}");
+      
+      
+      
+      chart.padding().right(60);
+      c1 = chart.plot(0);
+      c1.yAxis().orientation('right');
+      c1.legend().enabled(true);
+      //c1.xGrid(true).yGrid(true);
+      c1.line(dataTable.mapAs({value:5})).name('Last').stroke("#157AFB", 2.5, "6 0");
+      
+      c1.line(dataTable.mapAs({value:1})).name('1%').stroke("#E00A17", 1, "6 0");
+      c1.line(dataTable.mapAs({value:2})).name('high').stroke("#FD9D28", 1, "6 0");
+      c1.line(dataTable.mapAs({value:3})).name('low').stroke("#2AE028", 1, "6 0");
+      c1.sma(dataTable.mapAs({value:5}), 3).series().name('SMA').stroke("#157AFB", 1, "6 4");
+      
+      var indicator = c1.priceIndicator().value('series-end').stroke("#E1518F", 1, "4 2")
+      indicator.label().background().fill("#E1518F .8");
+      indicator.label().fontColor("white")
 
-      // create ohlc series on the first plot
-      chart.plot(0).ohlc(ohlcMapping);
+      var volumeSeries = c1.column(dataTable.mapAs({ value: 6 }));
+      volumeSeries.name('Volume').zIndex(100).maxHeight('20%').bottom(0);
+      volumeSeries.legendItem({
+          iconEnabled: false,
+          textOverflow: ''
+        });
+      
+      //volumeSeries.yAxis().labels().format('${%Value}{scale:(1000000)(1000)|(kk)(k)}');
 
-      // create and setup volume plot
-      var volumePlot = chart.plot(1);
-      volumePlot.height('30%');
-      volumePlot
-        .yAxis()
-        .labels()
-        .format('${%Value}{scale:(1000000)(1000)|(kk)(k)}');
+      volumeSeries.yScale(anychart.scales.log());
+      volumeSeries.stroke('#126E0E .1').risingStroke('#126E0E .8').fallingStroke('#740206 .2');
+      volumeSeries.fill('#126E0E .2').risingFill('#126E0E .8').fallingFill('#740206 .2');
 
-      // create and setup volume+MA indicator
-      var volumeMaIndicator = volumePlot.volumeMa(
-        volumeMapping,
-        20,
-        'sma',
-        'column',
-        'splineArea'
-      );
-      var maSeries = volumeMaIndicator.maSeries();
-      maSeries.stroke('red');
-      maSeries.fill('red .2');
-      volumeMaIndicator.volumeSeries('column');
-
-      // create scroller series
-      chart.scroller().area(valueMapping);
-
-      // set chart selected date/time range
-      chart.selectRange('2015-09-01', '2016-01-01');
-
-      // set container id for the chart
       chart.container('container');
-
-      // initiate chart drawing
       chart.draw();
+    
+      chart.background().fill("#373540")
 
-      // create range picker
-      var rangePicker = anychart.ui.rangePicker();
-      // init range picker
-      rangePicker.render(chart);
-
-      // create range selector
-      var rangeSelector = anychart.ui.rangeSelector();
-      // init range selector
-      rangeSelector.render(chart);
-
-
-	// moo change background
-	chart.background().fill("#373540");
     });
   
 </script>
