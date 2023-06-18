@@ -39,7 +39,6 @@
 
       anychart.onDocumentReady(function () {
         //anychart.theme('darkEarth');
-        document.getElementById('readout').innerHTML = datamap;
 
         var aa = []
         var dataTable = anychart.data.table();
@@ -59,7 +58,8 @@
         });
 
         dataTable.addData(aa);
-
+        document.getElementById('readout').innerHTML = aa;
+        
         // create stock chart
         var chart = anychart.stock();
         var title = chart.title();
