@@ -35,7 +35,7 @@
     var datamap = ''
     grist.ready();
     grist.onRecords(function (records) {
-      datamap = JSON.stringify(records, null, 2);
+      let datamap = JSON.stringify(records, null, 2);
 
 
       //anychart.onDocumentReady(function () {
