@@ -34,17 +34,17 @@
   <div id="container"></div>
 
   <script>
-	var aa = '' 
+	var datamap = '' 
 	grist.ready();
       grist.onRecords(function(records) {
-        aa = JSON.stringify(records, null, 2);
+        datamap = JSON.stringify(records, null, 2);
       });
 
 
 	  
     anychart.onDocumentReady(function () {
       //anychart.theme('darkEarth');
-      
+      var aa = []
       var dataTable = anychart.data.table(); 
       Object.keys(datamap).forEach(function(e) {
       
