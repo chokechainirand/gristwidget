@@ -35,11 +35,12 @@
     grist.ready();
     grist.onRecords(function (records) {
       datamap = JSON.stringify(records, null, 2);
-      document.getElementById('readout').innerHTML = datamap;
 
 
       anychart.onDocumentReady(function () {
         //anychart.theme('darkEarth');
+        document.getElementById('readout').innerHTML = datamap;
+
         var aa = []
         var dataTable = anychart.data.table();
         Object.keys(datamap).forEach(function (e) {
