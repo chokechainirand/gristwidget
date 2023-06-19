@@ -85,7 +85,7 @@
                     .risingStroke('').fallingStroke('').fill('#39695d .6')
                     .risingFill('#39695d .9').fallingFill('#39695d .2')
                     .tooltip().format(
-                        "{%seriesName}: {%value}{thousandsSeparator:'',scale:(1000)(1000)(1000)|(k)(m)(b),numDecimals:0,trailingZeros:false}");
+                        "{%seriesName}: {%value}{thousandsSeparator:',',scale:(1000)(1000)(1000)|(k)(m)(b),numDecimals:0,trailingZeros:false}");
 
                 c2.spline(vdp).yScale(anychart.scales.log())
                     .name('vdp').stroke("#fff9e8 .15", 1.25, "6 0")
