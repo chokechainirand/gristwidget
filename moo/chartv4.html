@@ -74,10 +74,10 @@
 
                 // load chart 1
                 c1.spline(last).name('Last').stroke("#1f88d6", 4, "6 0")
-                    .tooltip().format("{%seriesName}: {%value}{numDecimals:4,trailingZeros:true,thousandsSeparator:','}฿");
+                    .tooltip().format("{%seriesName}: {%value}{numDecimals:4,trailingZeros:true,thousandsSeparator:\\,}฿");
 
                 c1.spline(p).name('1%').stroke("#8f7fb8 .8", 1.5, "6 0")
-                    .tooltip().format("{%seriesName}: {%value}{numDecimals:4,trailingZeros:true,thousandsSeparator:','}฿");
+                    .tooltip().format("{%seriesName}: {%value}{numDecimals:4,trailingZeros:true,thousandsSeparator:\\,}฿");
 
                 // load chart 2
                 c2.column(volume).name('Volume')
@@ -85,7 +85,7 @@
                     .risingStroke('').fallingStroke('').fill('#39695d .6')
                     .risingFill('#39695d .9').fallingFill('#39695d .2')
                     .tooltip().format(
-                        "{%seriesName}: {%value}{scale:(1000)(1000)(1000)|(k)(m)(b),numDecimals:0,trailingZeros:false,thousandsSeparator:','}");
+                        "{%seriesName}: {%value}{scale:(1000)(1000)(1000)|(k)(m)(b),numDecimals:0,trailingZeros:false,thousandsSeparator:\\,}");
 
                 c2.spline(vdp).yScale(anychart.scales.log())
                     .name('vdp').stroke("#fff9e8 .15", 1.25, "6 0")
