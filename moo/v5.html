@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Chart</title>
+    <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-ui.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-exports.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-stock.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-data-adapter.min.js"></script>
+    <script src="https://cdn.anychart.com/csv-data/msft-daily-short-data(2011-2016).js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/themes/dark_turquoise.min.js"></script>
+    <link href="https://cdn.anychart.com/releases/v8/css/anychart-ui.min.css" type="text/css" rel="stylesheet">
+    <link href="https://cdn.anychart.com/releases/v8/fonts/css/anychart-font.min.css" type="text/css" rel="stylesheet">
+    <style type="text/css">
+        html,
+        body,
+        #container {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="container"></div>
+
+    <script>
+        let datamap = '';
+        let aa = [];
+        grist.ready();
+
+
+
+        anychart.onDocumentReady(function () {
+
+            grist.onRecords(function (records) {
+                document.getElementById('container').innerHTML = "";
+                datamap = records
+
+                var table = anychart.data.table('time').addData(datamap);
+                var last = table.mapAs({ x: 'time', value: 'last' });
+                var p = table.mapAs({ x: 'time', value: 'c1_percent' });
+                var volume = table.mapAs({ x: 'time', value: 'quoteVolume' })
+                var vdp = table.mapAs({ x: 'time', value: 'vdp' })
+
+                // set up chart
+                var chart = anychart.stock();
+                var c1 = chart.plot(0)
+                var c2 = chart.plot(1).height('35%')
+                var offset = new Date().getTimezoneOffset();
+                anychart.format.outputTimezone(offset)
+                
+                var indicator = c1.priceIndicator().value('series-end').stroke("", 1, "4 2")
+                indicator.label().background().fill("#E1518F .8");
+                indicator.label().fontColor("white")
+                chart.padding().right(70).left(17)
+                c1.legend().enabled(false)
+                c2.legend().enabled(false)
+
+                var title = chart.title();
+                title.enabled(true).text(datamap[0]['coin']);
+                chart.tooltip().fontColor("gold").hAlign('right');
+
+                c1.yAxis().orientation('right')
+                c2.yAxis().orientation('right')
+                c1.xGrid().stroke("grey", .2, "6 2")
+                c1.yGrid().stroke("grey", .2, "6 2")
+
+                // load chart 1
+                c1.spline(last).name('Last').stroke("#1f88d6", 4, "6 0")
+                    .tooltip().format("{%seriesName}: {%value}{numDecimals:4,trailingZeros:true,thousandsSeparator:\\,}฿");
+
+                c1.spline(p).name('1%').stroke("#8f7fb8 .8", 1.5, "6 0")
+                    .tooltip().format("{%seriesName}: {%value}{numDecimals:4,trailingZeros:true,thousandsSeparator:\\,}฿");
+
+                // load chart 2
+                c2.column(volume).name('Volume')
+                    .stroke('')
+                    .risingStroke('').fallingStroke('').fill('#39695d .6')
+                    .risingFill('#39695d .9').fallingFill('#39695d .2')
+                    .tooltip().format(
+                        "{%seriesName}: {%value}{scale:(1000)(1000)(1000)|(k)(m)(b),numDecimals:0,trailingZeros:false,thousandsSeparator:\\,}");
+
+                c2.spline(vdp).yScale(anychart.scales.log())
+                    .name('vdp').stroke("#fff9e8 .15", 1.25, "6 0")
+                    .tooltip().format(
+                        "{%seriesName}: {%value}{numDecimals:2,trailingZeros:false}%");
+
+                c2.yAxis()
+                    .labels()
+                    .format('{%Value}{scale:(1000)(1000)(1000)|(k)(m)(b)}');
+
+                // create chart
+                chart.container('container');
+                chart.draw();
+                chart.background().fill("#32333f")
+
+
+
+            });
+
+
+
+
+
+
+        });
+
+
+
+
+    //console.log(datamap)
+
+
+
+    </script>
+</body>
+
+</html>
