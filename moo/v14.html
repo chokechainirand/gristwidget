@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Chart</title>
+    <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+    <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+   <script  src="https://s3.tradingview.com/tv.js"></script>
+	
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-ui.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-exports.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-stock.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/js/anychart-data-adapter.min.js"></script>
+    <script src="https://cdn.anychart.com/csv-data/msft-daily-short-data(2011-2016).js"></script>
+    <script src="https://cdn.anychart.com/releases/v8/themes/dark_turquoise.min.js"></script>
+    <script src="https://cdn.anychart.com/releases/8.11.1/js/anychart-annotations.min.js"></script>
+    <link href="https://cdn.anychart.com/releases/v8/css/anychart-ui.min.css" type="text/css" rel="stylesheet">
+    <link href="https://cdn.anychart.com/releases/v8/fonts/css/anychart-font.min.css" type="text/css" rel="stylesheet">
+    <style type="text/css">
+  html,
+  body{
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		padding: 0;
+	
+		overflow: hidden;
+		
+    
+  }
+  #anychart {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  }
+  .float{
+  position:fixed;
+  width: 30px;
+  height:30px;
+  left:15px;
+  bottom:45px;
+  background-color:black;
+  color:#FFF;
+  border-radius:50px;
+  text-align:center;
+  box-shadow: 0px 0px 0px #999;
+  z-index: 7;
+  }
+
+	.my-float{
+		margin-top:2px;
+	}
+    </style>
+</head>
+
+<body>
+
+<!-- moo  float button BEGIN -->
+<div id="button" ><a onclick="toggleChart()" href="javascript:void(0);" class="float"><i class="fa fa-plus my-float">⧋</i></a></div>
+<div id="anychart" ></div>
+<div id="tradingview" style="display: none" ></div>
+<!-- TradingView Widget BEGIN -->
+
+
+    <script>
+  var datamap = '';
+  var coin = '';
+  var chart = "intitial";
+  grist.ready();
+  
+  function gristChart(){
+    anychart.onDocumentReady(function () {
+      window.chart ="gristChart"
+      var table = anychart.data.table('time').addData(datamap);
+      var last = table.mapAs({ x: 'time', value: 'last' });
+      var p = table.mapAs({ x: 'time', value: 'c1_percent' });
+      var volume = table.mapAs({ x: 'time', value: 'quoteVolume' })
+      var vdp = table.mapAs({ x: 'time', value: 'vdp' })
+      var p2 = table.mapAs({ x: 'time', low: 'last', high: 'c1_percent' })
+
+      // set up chart
+      var chart = anychart.stock();
+      var offset = new Date().getTimezoneOffset();
+      anychart.format.outputTimezone(offset)
+      var c1 = chart.plot(0)
+      var c2 = chart.plot(1).height('35%')
+
+      var indicator = c1.priceIndicator().value('series-end').stroke("", 1, "4 2")
+      indicator.label().background().fill("#E1518F .8");
+      indicator.label().fontColor("white")
+      chart.padding().right(70).left(17)
+      c1.legend().enabled(false)
+      c2.legend().enabled(false)
+
+      var title = chart.title();
+      title.enabled(true).text(datamap[0]['coin']);
+      chart.tooltip().fontColor("gold").hAlign('right');
+
+      c1.yAxis().orientation('right')
+      c2.yAxis().orientation('right')
+      c1.xGrid().stroke("grey", .2, "6 2")
+      c1.yGrid().stroke("grey", .2, "6 2")
+
+      // load chart 1
+      c1.spline(last).name('Last').stroke("#1f88d6", 4, "6 0")
+          .tooltip().format("{%seriesName}: {%value}{numDecimals:4,trailingZeros:true,thousandsSeparator:\\,} ฿");
+      c1.rangeSplineArea(p2).tooltip(false).fill("#1f88d6 .24").highStroke(false)
+
+      // load high low 24hr
+      var hilow = table.mapAs({ x: 'time', high: 'high24hr', low: 'low24hr' });
+      c1.rangeSplineArea(hilow).tooltip(false).fill(false).highStroke("#ff7f01 .5", 1.5).lowStroke("#ff7f01 .5", 1.5)
+
+      // filter and add buy sell markup
+      trade = datamap.filter((e) => e.remark == "buy" || e.remark == "sell")
+      trade.forEach((e) => {
+          let action = e['remark']
+          c1.annotations().label({
+              valueAnchor: e['last'],
+              text: action == 'buy' ? "▲\n" + e['last'] + "฿" : e['last'] + "฿\n" + "▼",//+"\n" + buy['time'].substr(11, 5),
+              xAnchor: e['time'],
+              background: "#39695d .0",
+              anchor: action == 'buy' ? "center-top" : "center-bottom",
+              fontColor: action == 'buy' ? "#7CFC00" : "#F66647",//offsetY:-65,
+              hAlign: "center"
+          });
+
+      })
+
+      // load chart 2
+      c2.column(volume).name('Volume')
+          .stroke('')
+          .risingStroke('').fallingStroke('')
+          .fill('#39695d .7').risingFill('#39695d 1').fallingFill('#39695d .4')
+          .tooltip().format(
+              "{%seriesName}: {%value}{numDecimals:0,thousandsSeparator:\\,} ฿");
+
+      c2.yAxis()
+          .labels()
+          .format('{%Value}{scale:(1000)(1000)(1000)|(k)(m)(b)}');
+
+      // create chart
+      chart.scroller().area(volume).fill('#39695d').stroke('')
+      chart.scroller().selectedFill('#1f88d6 0.2')
+      chart.container('anychart');
+      chart.draw();
+      chart.background().fill("#32333f")
+
+  });
+  }
+  
+  function tradingViewChart() {
+    window.chart = "TradingView";
+    tcoin = window.coin ? window.coin :"KUBTHB";
+   
+    new TradingView.widget({
+      "container_id": "tradingview",
+      "width": "100%",
+      "height": "100%",
+      "autosize": true,
+      "symbol": "BITKUB:"+tcoin,
+      
+      
+      "interval": "5",
+      "timezone": "Asia/Bangkok",
+      "theme": "Dark",
+      "style": "1",
+      "locale": "en",
+      
+      
+        //"interval": "15",
+        //"timezone": "exchange",
+        "theme": "dark",
+        "style": "1",	
+        "range": "1",
+        
+          
+        "width": "100%",
+        "height": "100%",
+        "autosize": false,
+          
+        "hide_side_toolbar": true,	
+        "hide_top_toolbar":true,	
+        "hide_legend":true,
+        "withdateranges": false,
+        
+        "toolbar_bg": "#f1f3f6",
+        "backgroundColor":"rgba(50, 51, 63, 1)",//"#32333f",
+        "allow_symbol_change": false,
+        "save_image": false,
+        
+          
+	"studies": [
+		{
+			id: "MASimple@tv-basicstudies",
+			inputs: {
+				length: 7,	} },
+		
+			{
+			id: "MASimple@tv-basicstudies",
+			name: "ss",
+			inputs: {
+				length: 25,	} },
+			{
+			id: "MASimple@tv-basicstudies",
+			name: "ss",
+			inputs: {
+				length: 99,} },
+
+  ]
+		
+		,
+    "studies_overrides": {
+				//"moving average.ma.color": "#A30000",
+				//"moving average.ma.color": "#ffffff",
+    },
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+    });	
+	}
+  
+  function changeChart(){
+	   if(chart == "gristChart"){
+       document.getElementById('container').innerHTML = "";
+    TradingViewChart();
+    //alert(window.chart)
+    //alert("to TradingView")
+    
+     }                       
+	else {
+    document.getElementById('container').innerHTML = "";
+    gristChart();
+    
+    //alert(window.chart)
+    //alert("to grist")
+  }
+	}
+
+  function toggleChart() {
+    var tchart = document.getElementById("tradingview");
+    var achart = document.getElementById("anychart");
+    
+  
+    if (tchart.style.display === "none" & achart.style.display === "block" ) {
+      tchart.style.display = "block";
+      achart.style.display = "none";
+    } else {
+      tchart.style.display = "none";
+      achart.style.display = "block";
+    }
+    }
+
+
+grist.onRecords(function (records) {
+    datamap = records 
+    document.getElementById('anychart').innerHTML = "";
+    document.getElementById('tradingview').innerHTML = "";
+    console.log(datamap)
+    window.coin = datamap[0]['coin'] + "THB"
+    //gristChart();
+    tradingViewChart();
+    });
+
+tradingViewChart()
+
+
+    </script>
+</body>
+
+</html>
