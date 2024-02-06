@@ -147,8 +147,8 @@
 
     grist.onRecords(function (records) {
             datamap = records
-            //document.getElementById('readout').innerHTML = JSON.stringify(records, null, 2);
-            anychart()
+            document.getElementById('readout').innerHTML = JSON.stringify(records, null, 2);
+            genHeatmap(datamap)
 
         });
         //anychart()
