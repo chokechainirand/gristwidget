@@ -83,7 +83,7 @@
 
         // ----------------grist start here 
         grist.ready();
-        function anychart(){
+        function gristChart(){
             anychart.onDocumentReady(function () {
             var chart = anychart.heatMap(heatData);
             chart.title("Heat Map: Basic Sample");
@@ -112,10 +112,12 @@
 
         grist.onRecords(function (records) {
             datamap = records
-            console.log(records)
+           
             document.getElementById('readout').innerHTML = JSON.stringify(records, null, 2);
             heatData = genHeatmap(records)
-            anychart()
+            console.log("-----------------------------",records,heatData)
+
+            gristChart()
         });
 
 
