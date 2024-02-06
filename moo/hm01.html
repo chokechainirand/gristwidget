@@ -122,7 +122,6 @@
                     "Feb06_19": 0
                 }]
                 function genHeatmap(d) {
-                    d = window.datamap
                     let data = []
                     for (i in d) {
                         //console.log(d[i]);
@@ -136,7 +135,7 @@
                     return data//console.log(lo,data);	
 
                 }
-                let mm = genHeatmap("dd")
+                let mm = genHeatmap(datamap)
                 // create a chart and set the data
                 var chart = anychart.heatMap(mm);
 
@@ -158,11 +157,11 @@
 
         grist.onRecords(function (records) {
             datamap = records
-            document.getElementById('readout').innerHTML = JSON.stringify(records, null, 2);
+            //document.getElementById('readout').innerHTML = JSON.stringify(records, null, 2);
             anychart()
 
         });
-        anychart()
+        //anychart()
 
     </script>
 </body>
