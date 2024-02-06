@@ -5,8 +5,6 @@
     <meta charset="utf-8">
     <title>Chart</title>
     <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
-    <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
-    <script src="https://s3.tradingview.com/tv.js"></script>
 
     <script
         src="https://cdn.anychart.com/releases/8.12.0/js/anychart-base.min.js?hcode=a0c21fc77e1449cc86299c5faa067dc4"></script>
@@ -57,28 +55,12 @@
 </head>
 
 <body>
-
-
     <pre id="readout">Waiting for data...</pre>
-    <script>
-        var datamap = '';
-        var coin = '';
-        var chart = "intitial";
-        grist.ready();
-
- 
-
-        grist.onRecords(function (records) {
-            datamap = records
-            document.getElementById('anychart').innerHTML = "";
-            document.getElementById('tradingview').innerHTML = "";
-            document.getElementById('readout').innerHTML = JSON.stringify(records, null, 2);
-           
-        });
-
-       
-
-
+   <script>
+      grist.ready();
+      grist.onRecords(function(records) {
+        document.getElementById('readout').innerHTML = JSON.stringify(records, null, 2);
+      });
     </script>
 </body>
 
