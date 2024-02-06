@@ -158,10 +158,12 @@
 
         grist.onRecords(function (records) {
             datamap = records
-            anychart()
             document.getElementById('readout').innerHTML = JSON.stringify(records, null, 2);
+            anychart()
 
         });
+        anychart()
+
     </script>
 </body>
 
