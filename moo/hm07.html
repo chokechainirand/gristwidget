@@ -89,13 +89,15 @@
 
         // ----------------grist start here 
         grist.ready();
-
-        anychart.onDocumentReady(function () {
+        function anychart(){
+            anychart.onDocumentReady(function () {
             var chart = anychart.heatMap(heatData);
             chart.title("Heat Map: Basic Sample");
             chart.container("container");
             chart.draw();
         });
+        }
+      
 
         function genHeatmap(d) {
             let data = []
@@ -113,16 +115,15 @@
 
         }
 
-        
-        grist.onRecords(function (records) {
-        datamap = records
-                    console.log(records)
 
-        document.getElementById('readout').innerHTML = JSON.stringify(records, null, 2);
-        heatData =genHeatmap(records)
-    });
- 
-        heatData = genHeatmap(grist)
+        grist.onRecords(function (records) {
+            datamap = records
+            console.log(records)
+            document.getElementById('readout').innerHTML = JSON.stringify(records, null, 2);
+            heatData = genHeatmap(records)
+            anychart()
+        });
+
 
 
 
