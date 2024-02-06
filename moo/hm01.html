@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Chart</title>
+    <script src="https://docs.getgrist.com/grist-plugin-api.js"></script>
+
+    <script
+        src="https://cdn.anychart.com/releases/8.12.0/js/anychart-base.min.js?hcode=a0c21fc77e1449cc86299c5faa067dc4"></script>
+    <script
+        src="https://cdn.anychart.com/releases/8.12.0/js/anychart-heatmap.min.js?hcode=a0c21fc77e1449cc86299c5faa067dc4"></script>
+    <script
+        src="https://cdn.anychart.com/releases/8.12.0/js/anychart-exports.min.js?hcode=a0c21fc77e1449cc86299c5faa067dc4"></script>
+    <script
+        src="https://cdn.anychart.com/releases/8.12.0/js/anychart-ui.min.js?hcode=a0c21fc77e1449cc86299c5faa067dc4"></script>
+    <style type="text/css">
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+
+            overflow: hidden;
+
+
+        }
+
+        #anychart {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        .float {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            left: 15px;
+            bottom: 45px;
+            background-color: black;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            box-shadow: 0px 0px 0px #999;
+            z-index: 7;
+        }
+
+        .my-float {
+            margin-top: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <pre id="readout">Waiting for data...</pre>
+    <div id="container"></div>
+
+    <script>
+        var datamap = '';
+        grist.ready();
+
+        function anychart() {
+            anychart.onDocumentReady(function () {
+                var grist = [{
+                    "id": 7,
+                    "device_label": "1901-CW",
+                    "Feb05_19": 0,
+                    "Feb05_20": 0,
+                    "Feb05_21": 0,
+                    "Feb05_22": 0,
+                    "Feb05_23": 0,
+                    "Feb06_00": 0,
+                    "Feb06_01": 0,
+                    "Feb06_02": 0,
+                    "Feb06_03": 0,
+                    "Feb06_04": 0,
+                    "Feb06_05": 0,
+                    "Feb06_06": 0,
+                    "Feb06_07": 0,
+                    "Feb06_08": 0,
+                    "Feb06_09": 0,
+                    "Feb06_10": 0,
+                    "Feb06_11": 0.011,
+                    "Feb06_12": 0.016,
+                    "Feb06_13": 0,
+                    "Feb06_14": 0.026,
+                    "Feb06_15": 0,
+                    "Feb06_16": 0,
+                    "Feb06_17": 0,
+                    "Feb06_18": 0,
+                    "Feb06_19": 0
+                }, {
+                    "id": 97,
+                    "device_label": "1902-CW",
+                    "Feb05_19": 0,
+                    "Feb05_20": 0,
+                    "Feb05_21": 0,
+                    "Feb05_22": 0,
+                    "Feb05_23": 0,
+                    "Feb06_00": 0,
+                    "Feb06_01": 0,
+                    "Feb06_02": 0,
+                    "Feb06_03": 0,
+                    "Feb06_04": 0,
+                    "Feb06_05": 0,
+                    "Feb06_06": 0,
+                    "Feb06_07": 0,
+                    "Feb06_08": 0,
+                    "Feb06_09": 0,
+                    "Feb06_10": 0,
+                    "Feb06_11": 0.011,
+                    "Feb06_12": 0.016,
+                    "Feb06_13": 0,
+                    "Feb06_14": 0.026,
+                    "Feb06_15": 0,
+                    "Feb06_16": 0,
+                    "Feb06_17": 0,
+                    "Feb06_18": 0,
+                    "Feb06_19": 0
+                }]
+                function genHeatmap(d) {
+                    d = window.datamap
+                    let data = []
+                    for (i in d) {
+                        //console.log(d[i]);
+                        var lo = d[i]['device_label'];
+                        delete d[i]['device_label'];
+                        delete d[i]['id'];
+                        for (const [key, value] of Object.entries(d[i])) {
+                            data.push({ x: key, y: lo, heat: value })
+                        }
+                    }
+                    return data//console.log(lo,data);	
+
+                }
+
+                // create a chart and set the data
+                var chart = anychart.heatMap(mm);
+
+                // set the chart title
+                chart.title("Heat Map: Basic Sample");
+
+                // set the container id
+                chart.container("container");
+
+                // initiate drawing the chart
+                chart.draw();
+
+
+
+
+
+            })
+        }
+
+        grist.onRecords(function (records) {
+            datamap = records
+            anychart()
+            document.getElementById('readout').innerHTML = JSON.stringify(records, null, 2);
+
+        });
+    </script>
+</body>
+
+</html>
