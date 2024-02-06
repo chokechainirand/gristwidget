@@ -113,7 +113,7 @@
         grist.onRecords(function (records) {
             datamap = records
            
-            document.getElementById('readout').innerHTML = JSON.stringify(records, null, 2);
+            //document.getElementById('readout').innerHTML = JSON.stringify(records, null, 2);
             heatData = genHeatmap(records)
             console.log("-----------------------------",records,heatData)
 
